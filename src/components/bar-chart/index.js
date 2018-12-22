@@ -13,7 +13,6 @@ const RootContainer = styled.div`
 const BarsContainer = styled.div`
   height: 100%;
   width: 100%;
-  background-color: #FFD399;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,16 +20,15 @@ const BarsContainer = styled.div`
 
 const LabelsContainer = styled.div`
   height: 40px;
-  background-color: #EF6C00;
 `
 
 const ScrollContainer = styled.div`
   height: 20px;
-  background-color: #FC427B;
 `
 
-const BarsText = styled.h1`
-  color: ${props => props.theme.textColor};
+const BarsView = styled.svg`
+  width: 100%;
+  height: 100%;
 `
 
 export default class BarChart extends React.Component {
@@ -40,12 +38,45 @@ export default class BarChart extends React.Component {
   }
 
   render() {
-    const { theme, bars } = this.props
-    console.log(bars)
+    const { theme, bars, barWidth, barSpace } = this.props
     
     const { width, height } = this.state
     const Bars = () => {
-      return <BarsText>{Math.round(width)} x {Math.round(height)}</BarsText>
+      const highest = bars.reduce((acc, bar) => {
+        const height = bar.reduce((acc, { value }) => acc + value, 0)
+        return height > acc ? height : acc
+      }, 0)
+      const valueToHeight = value => (value * height) / highest
+
+      const Bar = ({ bar, index }) => {
+        const x = width - (barWidth + barSpace) * (index + 1)
+        
+        const Subbar = ({ valueBefore, value, color }) => {
+          const rectHeight = valueToHeight(value)
+          const y = height - valueToHeight(valueBefore) - rectHeight
+
+          return (
+            <rect x={x} y={y} width={barWidth} height={rectHeight} fill={color}/>
+          )
+        }
+
+        return (
+          <g>
+            {bar.map(({ value, color }, index) => {
+              const valueBefore = bar.slice(0, index).reduce((acc, { value }) => acc + value, 0)
+              const props = { value, color, valueBefore, key: index }
+
+              return <Subbar {...props} />
+            })}
+          </g>
+        )
+      }
+
+      return (
+        <BarsView>
+          {bars.map((bar, index) => <Bar bar={bar} index={index} key={index} />)}
+        </BarsView>
+      )
     }
 
     return (

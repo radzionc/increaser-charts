@@ -36,11 +36,15 @@ const TimeWaitsForNoOne = styled.a`
 `
 
 export default () => {
-  const bars = getMockBars(10)
+  const bars = getMockBars(50)
   return (
     <Page>
       <Wrapper>
-        <BarChart bars={bars} />
+        <BarChart
+          bars={bars}
+          barWidth={30}
+          barSpace={4}
+        />
       </Wrapper>
       <TimeWaitsForNoOne
         target="_blank"
