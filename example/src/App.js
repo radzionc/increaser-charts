@@ -35,23 +35,36 @@ const TimeWaitsForNoOne = styled.a`
   text-decoration: none;
 `
 
-export default () => {
-  const bars = getMockBars(50)
-  return (
-    <Page>
-      <Wrapper>
-        <BarChart
-          bars={bars}
-          barWidth={30}
-          barSpace={4}
-        />
-      </Wrapper>
-      <TimeWaitsForNoOne
-        target="_blank"
-        href="https://medium.com/@geekrodion/increaser-mindset-dc828a2bcd4d"
-      >
-        Time Waits For No One, and It Won't Wait For Me
-      </TimeWaitsForNoOne>
-    </Page>
-  )
+const BARS = getMockBars(100)
+
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { }
+  }
+
+  render() {
+    const { centerBarIndex } = this.state
+    return (
+      <Page>
+        <Wrapper>
+          <BarChart
+            bars={BARS}
+            barWidth={30}
+            barSpace={4}
+            centerBarIndex={centerBarIndex}
+            onBarSelect={(centerBarIndex) => this.setState({ centerBarIndex })}
+          />
+        </Wrapper>
+        <TimeWaitsForNoOne
+          target="_blank"
+          href="https://medium.com/@geekrodion/increaser-mindset-dc828a2bcd4d"
+        >
+          Time Waits For No One, and It Won't Wait For Me
+        </TimeWaitsForNoOne>
+      </Page>
+    )
+  }
 }
+
+export default App

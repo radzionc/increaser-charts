@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { ThemeProvider } from 'styled-components'
+import styled, { ThemeProvider, keyframes } from 'styled-components'
 
 import { defaultTheme } from '../../constants/theme'
 
@@ -31,6 +31,17 @@ const BarsView = styled.svg`
   height: 100%;
 `
 
+const barAnimation = keyframes`
+  to {
+    transform: ${props => `translateX(${props.offset}px)`}
+  }
+`
+
+const BarContainer = styled.g`
+  animation: ${barAnimation} 2s ease;
+  /* transition: all 1s ease-in-out; */
+`
+
 export default class BarChart extends React.Component {
   constructor(props) {
     super(props)
@@ -38,7 +49,14 @@ export default class BarChart extends React.Component {
   }
 
   render() {
-    const { theme, bars, barWidth, barSpace } = this.props
+    const {
+      theme,
+      bars,
+      barWidth,
+      barSpace,
+      onBarSelect,
+      centerBarIndex
+    } = this.props
     
     const { width, height } = this.state
     const Bars = () => {
@@ -47,9 +65,16 @@ export default class BarChart extends React.Component {
         return height > acc ? height : acc
       }, 0)
       const valueToHeight = value => (value * height) / highest
+      const getOffset = () => {
+        if (centerBarIndex === undefined) return 0
 
+        const realPosition = width - (barWidth + barSpace) * (centerBarIndex + 1)
+        const desiredPosition = (width - barWidth + barSpace) / 2
+        return realPosition - desiredPosition
+      }
+      const offset = getOffset()
       const Bar = ({ bar, index }) => {
-        const x = width - (barWidth + barSpace) * (index + 1)
+        const x = width - (barWidth + barSpace) * (index + 1) - offset
         
         const Subbar = ({ valueBefore, value, color }) => {
           const rectHeight = valueToHeight(value)
@@ -60,15 +85,28 @@ export default class BarChart extends React.Component {
           )
         }
 
+        const Selectable = () => (
+          <rect
+            onClick={() => onBarSelect(index)}
+            cursor={'pointer'}
+            x={x - barSpace / 2}
+            width={barWidth + barSpace}
+            y={0}
+            height={height}
+            fill={'transparent'}
+          />
+        )
+
         return (
-          <g>
+          <BarContainer key={index}>
             {bar.map(({ value, color }, index) => {
               const valueBefore = bar.slice(0, index).reduce((acc, { value }) => acc + value, 0)
               const props = { value, color, valueBefore, key: index }
-
+              
               return <Subbar {...props} />
             })}
-          </g>
+            {onBarSelect && <Selectable/>}
+          </BarContainer>
         )
       }
 
@@ -90,6 +128,13 @@ export default class BarChart extends React.Component {
         </RootContainer>
       </ThemeProvider>
     )
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.centerBarIndex !== this.props.centerBarIndex) {
+      this.setState({ })
+      console.log(this.props, prevProps)
+    }
   }
 
   componentDidMount() {
