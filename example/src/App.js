@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { BarChart } from 'increaser-charts'
+import { getMockBars } from './mock';
 
 const Page = styled.div`
   height: 100vh;
@@ -35,10 +36,11 @@ const TimeWaitsForNoOne = styled.a`
 `
 
 export default () => {
+  const bars = getMockBars(10)
   return (
     <Page>
       <Wrapper>
-        <BarChart />
+        <BarChart bars={bars} />
       </Wrapper>
       <TimeWaitsForNoOne
         target="_blank"

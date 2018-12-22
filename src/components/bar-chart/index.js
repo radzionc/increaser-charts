@@ -40,8 +40,9 @@ export default class BarChart extends React.Component {
   }
 
   render() {
-    const { theme } = this.props
-
+    const { theme, bars } = this.props
+    console.log(bars)
+    
     const { width, height } = this.state
     const Bars = () => {
       return <BarsText>{Math.round(width)} x {Math.round(height)}</BarsText>
