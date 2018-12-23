@@ -35,7 +35,7 @@ const TimeWaitsForNoOne = styled.a`
   text-decoration: none;
 `
 
-const BARS = getMockBars(100)
+const BARS = getMockBars(60)
 
 class App extends React.Component {
   constructor(props) {

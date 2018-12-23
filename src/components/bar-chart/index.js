@@ -76,7 +76,7 @@ export default class BarChart extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { width, offset } = prevState
     const { centerBarIndex, barWidth, barSpace, bars } = nextProps
-    if (centerBarIndex) {
+    if (centerBarIndex !== undefined) {
       const realPosition = (barWidth + barSpace) * (centerBarIndex + 1)
       const desiredPosition = (width - barWidth - barSpace) / 2
       const totalWidth = bars.length * (barWidth + barSpace)
