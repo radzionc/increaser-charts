@@ -35,6 +35,7 @@ const Position = styled.div`
 class Scroller extends React.Component {
   constructor(props) {
     super(props)
+    this.moving = false
     this.state = {
       moving: false
     }
@@ -63,6 +64,10 @@ class Scroller extends React.Component {
         />
       </Container>
     )
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps !== this.props
   }
 
   componentDidMount() {
