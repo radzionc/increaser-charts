@@ -77,8 +77,8 @@ export default class BarChart extends React.Component {
     const { width, offset } = prevState
     const { centerBarIndex, barWidth, barSpace, bars } = nextProps
     if (centerBarIndex) {
-      const realPosition = (barWidth + barSpace) * centerBarIndex
-      const desiredPosition = (width - barWidth + barSpace) / 2
+      const realPosition = (barWidth + barSpace) * (centerBarIndex + 1)
+      const desiredPosition = (width - barWidth - barSpace) / 2
       const totalWidth = bars.length * (barWidth + barSpace)
       const offsetToCenter = totalWidth - realPosition - desiredPosition
       const getOffset = () => {
