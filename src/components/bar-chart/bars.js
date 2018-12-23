@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { keyframes, css } from 'styled-components'
+import styled from 'styled-components'
 
 import Bar from './bar'
 import { animationStyle } from '../styles'
@@ -34,7 +34,7 @@ export default ({
   }, 0)
   const totalWidth = (bars.length * (barWidth + barSpace))
 
-  const barCommonProps = { height, width: totalWidth, barWidth, barSpace, oldOffset, offset, centerBarIndex, onBarSelect, highest }
+  const barCommonProps = { height, barWidth, barSpace, oldOffset, offset, centerBarIndex, onBarSelect, highest }
   const left = width + oldOffset - totalWidth
   return (
     <Container>

@@ -22,7 +22,7 @@ const getGaussianRandomNumber = () => new Array(6)
   .map(() => Math.random())
   .reduce((acc, n) => acc + n, 0) / 6
 
-const getMockBar = () => {
+const getMockBarItems = () => {
   const randNumber = getGaussianRandomNumber()
   const height = MIN_TOTAL_HEIGHT + randNumber * (MAX_TOTAL_HEIGHT - MIN_TOTAL_HEIGHT + 1)
 
@@ -61,7 +61,21 @@ const getMockBar = () => {
 export const getMockBars = (number) => {
   const bars = new Array(number)
     .fill(0)
-    .map(getMockBar)
+    .map((_, index) => {
+      const items = getMockBarItems()
+      const getLabel = () => {
+        if (index + 1 === number) return 'Today'
+        const today = new Date()
+        today.setDate(today.getDate() - (number - index - 1))
+        return `${today.getMonth() + 1}/${today.getDate()}`
+      }
+
+      return { 
+        items,
+        label: getLabel()
+      }
+    })
+
 
   return bars
 }

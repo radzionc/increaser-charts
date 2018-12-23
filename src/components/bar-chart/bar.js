@@ -1,10 +1,8 @@
 import React from 'react'
-import styled from 'styled-components'
 
 export default ({
   bar,
   index,
-  width,
   height,
   barWidth,
   barSpace,
@@ -12,7 +10,7 @@ export default ({
   onBarSelect,
   highest
 }) => {
-  const x = width - (barWidth + barSpace) * (index + 1)
+  const x = (barWidth + barSpace) * index + 1
   const valueToHeight = value => (value * height) / highest
       
   const Subbar = ({ valueBefore, value, color }) => {
@@ -20,7 +18,7 @@ export default ({
     const y = height - valueToHeight(valueBefore) - rectHeight
 
     return (
-      <rect opacity={index === centerBarIndex ? 1 : 0.8} x={x} y={y} width={barWidth} height={rectHeight} fill={color}/>
+      <rect opacity={index === centerBarIndex ? 1 : 0.7} x={x} y={y} width={barWidth} height={rectHeight} fill={color}/>
     )
   }
 

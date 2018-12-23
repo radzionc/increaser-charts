@@ -3,6 +3,7 @@ import styled, { ThemeProvider } from 'styled-components'
 
 import { defaultTheme } from '../../constants/theme'
 import Bars from './bars'
+import Labels from './labels'
 import Scroller from './scroller'
 
 const RootContainer = styled.div`
@@ -18,10 +19,6 @@ const BarsContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
-
-const LabelsContainer = styled.div`
-  height: 40px;
 `
 
 export default class BarChart extends React.Component {
@@ -44,15 +41,17 @@ export default class BarChart extends React.Component {
     } = this.props
     const { width, height, offset, oldOffset } = this.state
 
-    const barsProps = { width, height, bars, barWidth, barSpace, onBarSelect, centerBarIndex, offset, oldOffset }
+    const barsProps = { width, height, bars: bars.map(b => b.items), barWidth, barSpace, onBarSelect, centerBarIndex, offset, oldOffset }
     const scrollerProps = { offset, oldOffset, barWidth, barSpace, barsNumber: bars.length, width }
+    const labelsProps = { centerBarIndex, width, offset, oldOffset, labels: bars.map(b => b.label), barWidth, barSpace }
+
     return (
       <ThemeProvider theme={{ ...defaultTheme, ...theme}}>
         <RootContainer>
           <BarsContainer ref={el => this.barsContainer = el}>
             {width && height && <Bars {...barsProps} />}
           </BarsContainer>
-          <LabelsContainer/>
+          {width && <Labels {...labelsProps}/>}
           {width && <Scroller {...scrollerProps}/>}
         </RootContainer>
       </ThemeProvider>
@@ -78,13 +77,13 @@ export default class BarChart extends React.Component {
     const { width, offset } = prevState
     const { centerBarIndex, barWidth, barSpace, bars } = nextProps
     if (centerBarIndex) {
-      const realPosition = width - (barWidth + barSpace) * (centerBarIndex + 1)
+      const realPosition = (barWidth + barSpace) * centerBarIndex
       const desiredPosition = (width - barWidth + barSpace) / 2
-      const offsetToCenter = desiredPosition - realPosition
-      const totalBarsWidth = bars.length * (barWidth + barSpace)
+      const totalWidth = bars.length * (barWidth + barSpace)
+      const offsetToCenter = totalWidth - realPosition - desiredPosition
       const getOffset = () => {
         if (offsetToCenter < 0) return 0
-        if (offsetToCenter + width > totalBarsWidth) return totalBarsWidth - width
+        if (offsetToCenter + width > totalWidth) return totalWidth - width
         return offsetToCenter
       }
       return {

@@ -50,7 +50,7 @@ class App extends React.Component {
         <Wrapper>
           <BarChart
             bars={BARS}
-            barWidth={30}
+            barWidth={40}
             barSpace={4}
             centerBarIndex={centerBarIndex}
             onBarSelect={(centerBarIndex) => this.setState({ centerBarIndex })}
