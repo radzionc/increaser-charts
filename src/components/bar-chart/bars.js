@@ -2,19 +2,8 @@ import React from 'react'
 import styled, { keyframes, css } from 'styled-components'
 
 import Bar from './bar'
+import { animationStyle } from '../styles'
 
-const barAnimation = (props) => keyframes`
-  from {
-    transform: none;
-  }
-  to {
-    transform: translateX(${props.offset}px);
-  }
-`
-
-const animationStyle = css`
-  animation: ${barAnimation} 1.2s ease-in-out forwards;
-`
 const Container = styled.div`
   overflow: hidden;
   width: 100%;
@@ -47,7 +36,6 @@ export default ({
 
   const barCommonProps = { height, width: totalWidth, barWidth, barSpace, oldOffset, offset, centerBarIndex, onBarSelect, highest }
   const left = width + oldOffset - totalWidth
-  
   return (
     <Container>
       <BarsView style={{ width: totalWidth, left }} offset={offset - oldOffset}>

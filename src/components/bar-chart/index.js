@@ -45,7 +45,7 @@ export default class BarChart extends React.Component {
     const { width, height, offset, oldOffset } = this.state
 
     const barsProps = { width, height, bars, barWidth, barSpace, onBarSelect, centerBarIndex, offset, oldOffset }
-    const scrollerProps = { offset, barWidth, barSpace, barsNumber: bars.length, width }
+    const scrollerProps = { offset, oldOffset, barWidth, barSpace, barsNumber: bars.length, width }
     return (
       <ThemeProvider theme={{ ...defaultTheme, ...theme}}>
         <RootContainer>
@@ -73,10 +73,11 @@ export default class BarChart extends React.Component {
     this.setState({ width, height })
   }
 
-  componentDidUpdate(prevProps) {
-    const { width } = this.state
-    const { centerBarIndex, barWidth, barSpace, bars } = this.props
-    if (prevProps.centerBarIndex !== centerBarIndex && centerBarIndex !== undefined) {
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { width, offset } = prevState
+    const { centerBarIndex, barWidth, barSpace, bars } = nextProps
+    if (centerBarIndex) {
       const realPosition = width - (barWidth + barSpace) * (centerBarIndex + 1)
       const desiredPosition = (width - barWidth + barSpace) / 2
       const offsetToCenter = desiredPosition - realPosition
@@ -86,7 +87,13 @@ export default class BarChart extends React.Component {
         if (offsetToCenter + width > totalBarsWidth) return totalBarsWidth - width
         return offsetToCenter
       }
-      this.setState({ offset: getOffset(), oldOffset: this.state.offset })
+      return {
+        ...prevState,
+        offset: getOffset(),
+        oldOffset: offset
+      }
     }
+
+    return null
   }
 }
