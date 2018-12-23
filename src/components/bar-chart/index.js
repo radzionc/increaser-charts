@@ -1,8 +1,9 @@
 import React from 'react'
-import styled, { ThemeProvider, keyframes } from 'styled-components'
+import styled, { ThemeProvider } from 'styled-components'
 
 import { defaultTheme } from '../../constants/theme'
 import Bars from './bars'
+import Scroller from './scroller'
 
 const RootContainer = styled.div`
   height: 100%;
@@ -23,14 +24,13 @@ const LabelsContainer = styled.div`
   height: 40px;
 `
 
-const ScrollContainer = styled.div`
-  height: 20px;
-`
-
 export default class BarChart extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { }
+    this.state = {
+      oldOffset: 0,
+      offset: 0
+    }
   }
 
   render() {
@@ -42,10 +42,10 @@ export default class BarChart extends React.Component {
       onBarSelect,
       centerBarIndex
     } = this.props
-    const { width, height } = this.state
+    const { width, height, offset, oldOffset } = this.state
 
-    const barsProps = { width, height, bars, barWidth, barSpace, onBarSelect, centerBarIndex }
-
+    const barsProps = { width, height, bars, barWidth, barSpace, onBarSelect, centerBarIndex, offset, oldOffset }
+    const scrollerProps = { offset, barWidth, barSpace, barsNumber: bars.length, width }
     return (
       <ThemeProvider theme={{ ...defaultTheme, ...theme}}>
         <RootContainer>
@@ -53,7 +53,7 @@ export default class BarChart extends React.Component {
             {width && height && <Bars {...barsProps} />}
           </BarsContainer>
           <LabelsContainer/>
-          <ScrollContainer/>
+          {width && <Scroller {...scrollerProps}/>}
         </RootContainer>
       </ThemeProvider>
     )
@@ -71,5 +71,22 @@ export default class BarChart extends React.Component {
   onResize = () => {
     const { width, height } = this.barsContainer.getBoundingClientRect()
     this.setState({ width, height })
+  }
+
+  componentDidUpdate(prevProps) {
+    const { width } = this.state
+    const { centerBarIndex, barWidth, barSpace, bars } = this.props
+    if (prevProps.centerBarIndex !== centerBarIndex && centerBarIndex !== undefined) {
+      const realPosition = width - (barWidth + barSpace) * (centerBarIndex + 1)
+      const desiredPosition = (width - barWidth + barSpace) / 2
+      const offsetToCenter = desiredPosition - realPosition
+      const totalBarsWidth = bars.length * (barWidth + barSpace)
+      const getOffset = () => {
+        if (offsetToCenter < 0) return 0
+        if (offsetToCenter + width > totalBarsWidth) return totalBarsWidth - width
+        return offsetToCenter
+      }
+      this.setState({ offset: getOffset(), oldOffset: this.state.offset })
+    }
   }
 }
