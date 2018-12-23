@@ -42,7 +42,7 @@ export default class BarChart extends React.Component {
     const { width, height, offset, oldOffset } = this.state
 
     const barsProps = { width, height, bars: bars.map(b => b.items), barWidth, barSpace, onBarSelect, centerBarIndex, offset, oldOffset }
-    const scrollerProps = { offset, oldOffset, barWidth, barSpace, barsNumber: bars.length, width }
+    const scrollerProps = { offset, oldOffset, barWidth, barSpace, barsNumber: bars.length, width, onDrag: this.onScroll }
     const labelsProps = { centerBarIndex, width, offset, oldOffset, labels: bars.map(b => b.label), barWidth, barSpace }
 
     return (
@@ -72,6 +72,9 @@ export default class BarChart extends React.Component {
     this.setState({ width, height })
   }
 
+  onScroll = (movementX) => {
+    console.log(movementX)
+  }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { width, offset } = prevState

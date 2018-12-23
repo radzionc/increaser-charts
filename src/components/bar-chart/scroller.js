@@ -5,34 +5,92 @@ import { animationStyle } from '../styles'
 
 
 const Container = styled.div`
+  position: relative;
   height: 20px;
   width: 100%;
+  display: flex;
+  align-items: center;
 `
 
 const Line = styled.div`
+  position: absolute;
   width: 100%;
-  height: 4px;
+  height: 6px;
   background-color: rgba(255, 255, 255, 0.15);
 `
 
 const Position = styled.div`
-  height: 4px;
+  cursor: pointer;
+  position: absolute;
+  height: 6px;
   background-color: ${props => props.theme.textColor};
+  border-radius: 3px;
+  &:hover {
+    height: 8px;
+    border-radius: 4px;
+  }
   ${animationStyle}
 `
 
-export default ({ oldOffset, offset, barWidth, barSpace, barsNumber, width }) => {
-  const totalWidth = (barsNumber * (barWidth + barSpace))
-  const periodWidth = (width * 100) / totalWidth
-  const getMargin = offset => ((totalWidth  - (offset + width)) / totalWidth) * 100
-  const periodMargin = getMargin(oldOffset)
-  const animationOffset = getMargin(offset) - periodMargin
-  const positionStyle = { width: `${periodWidth}%`, marginLeft: `${periodMargin}%` }
-  return (
-    <Container>
-      <Line>
-        <Position offset={(animationOffset * width) / 100} style={positionStyle} />
-      </Line>
-    </Container>
-  )
+class Scroller extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      moving: false
+    }
+  }
+
+  render() {
+    const { oldOffset, offset, barWidth, barSpace, barsNumber, width } = this.props
+
+    const totalWidth = (barsNumber * (barWidth + barSpace))
+    const periodWidth = (width * 100) / totalWidth
+    const getMargin = offset => ((totalWidth  - (offset + width)) / totalWidth) * 100
+    const periodMargin = getMargin(oldOffset)
+    const animationOffset = getMargin(offset) - periodMargin
+    const positionStyle = { width: `${periodWidth}%`, marginLeft: `${periodMargin}%` }
+    return (
+      <Container>
+        <Line/>
+        <Position
+          offset={(animationOffset * width) / 100}
+          style={positionStyle}
+
+          onMouseDown={this.onMouseDown}
+          onTouchStart={this.onMouseDown}
+          onMouseMove={this.onMouseMove}
+          onTouchMove={this.onMouseMove}
+        />
+      </Container>
+    )
+  }
+
+  componentDidMount() {
+    document.addEventListener('mouseup', this.onMouseUp)
+    document.addEventListener('touchend', this.onMouseDown)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mouseup', this.onMouseUp)
+    document.removeEventListener('touchend', this.onMouseDown)
+  }
+
+  onMouseDown = () => {
+    this.setState({ moving: true })
+  }
+
+  onMouseMove = e => {
+    if (this.state.moving && (e.movementX || e.changedTouches)) {
+      const { movementX } = e.movementX ? e : e.changedTouches[0]
+      this.props.onDrag(movementX)
+    }
+  }
+
+  onMouseUp = () => {
+    if (this.state.moving) {
+      this.setState({ moving: false })
+    }
+  }
 }
+
+export default Scroller
