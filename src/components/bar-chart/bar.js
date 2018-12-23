@@ -1,18 +1,5 @@
 import React from 'react'
-import styled, { keyframes } from 'styled-components'
-
-const barAnimation = (props) => keyframes`
-  from {
-    transform: none;
-  }
-  to {
-    transform: translateX(${props.offset}px);
-  }
-`
-
-const BarContainer = styled.g`
-  animation: ${barAnimation} 1.2s ease-in-out forwards;
-`
+import styled from 'styled-components'
 
 export default ({
   bar,
@@ -21,13 +8,11 @@ export default ({
   height,
   barWidth,
   barSpace,
-  oldOffset,
-  offset,
   centerBarIndex,
   onBarSelect,
   highest
 }) => {
-  const x = width - (barWidth + barSpace) * (index + 1) + oldOffset
+  const x = width - (barWidth + barSpace) * (index + 1)
   const valueToHeight = value => (value * height) / highest
       
   const Subbar = ({ valueBefore, value, color }) => {
@@ -51,7 +36,7 @@ export default ({
     />
   )
   return (
-    <BarContainer key={index} offset={offset - oldOffset}>
+    <g key={index}>
       {bar.map(({ value, color }, index) => {
         const valueBefore = bar.slice(0, index).reduce((acc, { value }) => acc + value, 0)
         const props = { value, color, valueBefore, key: index }
@@ -59,6 +44,6 @@ export default ({
         return <Subbar {...props} />
       })}
       {onBarSelect && <Selectable/>}
-    </BarContainer>
+    </g>
   )
 }
