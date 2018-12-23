@@ -73,7 +73,18 @@ export default class BarChart extends React.Component {
   }
 
   onScroll = (movementX) => {
+    const { width, offset } = this.state
+    const { barWidth, barSpace, bars } = this.props
+    const totalWidth = bars.length * (barWidth + barSpace)
+    const additionalOffset = (totalWidth / width) * movementX
+    const newOffset = offset - additionalOffset
+    const getOffset = () => {
+      if (newOffset < 0) return 0
+      if (newOffset + width > totalWidth) return totalWidth - width
+      return newOffset
+    }
     console.log(movementX)
+    this.setState({ offset: getOffset(), oldOffset: offset })
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {

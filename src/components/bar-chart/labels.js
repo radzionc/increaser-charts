@@ -16,6 +16,7 @@ const Labels = styled.div`
   position: absolute;
   display: flex;
   flex-direction: row;
+  user-select: none;
   ${animationStyle}
 `
 
