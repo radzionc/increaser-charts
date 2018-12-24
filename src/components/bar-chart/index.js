@@ -86,7 +86,7 @@ export default class BarChart extends React.Component {
 
   onScroll = (movementX) => {
     const { width, offset } = this.state
-    const { barWidth, barSpace, bars, selectCenterBarOnScroll } = this.props
+    const { barWidth, barSpace, bars, selectCenterBarOnScroll, centerBarIndex, onBarSelect } = this.props
     const totalWidth = bars.length * (barWidth + barSpace)
     const additionalOffset = (totalWidth / width) * movementX
     const getOffset = () => {
@@ -97,9 +97,13 @@ export default class BarChart extends React.Component {
     }
     const newOffset = getOffset()
     this.setState({ offset: newOffset, oldOffset: newOffset })
-    // if (selectCenterBarOnScroll) {
-    //   const newCenterBarIndex = bars.findIndex((_, index) => index * (barWidth + barSpace) >= )
-    // }
+    if (selectCenterBarOnScroll) {
+      const center = totalWidth - newOffset - width / 2
+      const newCenterBarIndex = bars.findIndex((_, index) => ((index) * (barWidth + barSpace)) >= center) - 1
+      if (centerBarIndex !== newCenterBarIndex) {
+        onBarSelect(newCenterBarIndex)
+      }
+    }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {

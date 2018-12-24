@@ -18,7 +18,7 @@ export default ({
     const y = height - valueToHeight(valueBefore) - rectHeight
 
     return (
-      <rect opacity={index === centerBarIndex ? 1 : 0.7} x={x} y={y} width={barWidth} height={rectHeight} fill={color}/>
+      <rect opacity={index === centerBarIndex ? 1 : 0.6} x={x} y={y} width={barWidth} height={rectHeight} fill={color}/>
     )
   }
 
