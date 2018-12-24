@@ -20,26 +20,26 @@ const BarsView = styled.svg`
 export default ({
   width,
   height,
-  bars,
+  items,
   barWidth,
   barSpace,
   onBarSelect,
   centerBarIndex,
   offset,
-  oldOffset
+  oldOffset,
+  totalWidth
 }) => {
-  const highest = bars.reduce((acc, bar) => {
+  const highest = items.reduce((acc, bar) => {
     const height = bar.reduce((acc, { value }) => acc + value, 0)
     return height > acc ? height : acc
   }, 0)
-  const totalWidth = (bars.length * (barWidth + barSpace))
 
   const barCommonProps = { height, barWidth, barSpace, oldOffset, offset, centerBarIndex, onBarSelect, highest }
   const left = width + oldOffset - totalWidth
   return (
     <Container>
       <BarsView style={{ width: totalWidth, left }} offset={offset - oldOffset}>
-        {bars.map((bar, index) => <Bar {...barCommonProps} bar={bar} index={index} key={index} />)}
+        {items.map((bar, index) => <Bar {...barCommonProps} bar={bar} index={index} key={index} />)}
       </BarsView>
     </Container>
   )

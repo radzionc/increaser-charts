@@ -40,17 +40,25 @@ export default class BarChart extends React.Component {
       onBarSelect,
       centerBarIndex
     } = this.props
-    const { width, height, offset, oldOffset, scrolling } = this.state
+    const { width, height, offset, oldOffset, scrolling, totalWidth } = this.state
 
-    const barsProps = { width, height, bars: bars.map(b => b.items), barWidth, barSpace, onBarSelect, centerBarIndex, offset, oldOffset }
-    const labelsProps = { centerBarIndex, width, offset, oldOffset, labels: bars.map(b => b.label), barWidth, barSpace }
-    const scrollerProps = {
-      offset,
-      oldOffset,
+    const commonProps = { totalWidth, width, offset, oldOffset }
+    const barsProps = {
+      ...commonProps,
+      height,
       barWidth,
       barSpace,
-      barsNumber: bars.length,
-      width,
+      onBarSelect,
+      centerBarIndex,
+      items: bars.map(b => b.items),
+    }
+    const labelsProps = {
+      ...commonProps,
+      centerBarIndex,
+      labels: bars.map(b => b.label)
+    }
+    const scrollerProps = {
+      ...commonProps,
       scrolling,
       onDragStart: () => this.setState({ scrolling: true, oldOffset: this.state.offset }),
       onDrag: this.onScroll,
@@ -61,7 +69,7 @@ export default class BarChart extends React.Component {
       <ThemeProvider theme={{ ...defaultTheme, ...theme}}>
         <RootContainer>
           <BarsContainer ref={el => this.barsContainer = el}>
-            {width && height && <Bars {...barsProps} />}
+            {width && <Bars {...barsProps} />}
           </BarsContainer>
           {width && <Labels {...labelsProps}/>}
           {width && <Scroller {...scrollerProps}/>}
@@ -85,9 +93,8 @@ export default class BarChart extends React.Component {
   }
 
   onScroll = (movementX) => {
-    const { width, offset } = this.state
+    const { width, offset, totalWidth } = this.state
     const { barWidth, barSpace, bars, selectCenterBarOnScroll, centerBarIndex, onBarSelect } = this.props
-    const totalWidth = bars.length * (barWidth + barSpace)
     const additionalOffset = (totalWidth / width) * movementX
     const getOffset = () => {
       const newOffset = offset - additionalOffset
@@ -109,23 +116,30 @@ export default class BarChart extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { width, offset, scrolling } = prevState
     const { centerBarIndex, barWidth, barSpace, bars } = nextProps
-    if (centerBarIndex !== undefined && !scrolling) {
-      const realPosition = (barWidth + barSpace) * (centerBarIndex + 1)
-      const desiredPosition = (width - barWidth - barSpace) / 2
-      const totalWidth = bars.length * (barWidth + barSpace)
-      const offsetToCenter = totalWidth - realPosition - desiredPosition
-      const getOffset = () => {
-        if (offsetToCenter < 0) return 0
-        if (offsetToCenter + width > totalWidth) return totalWidth - width
-        return offsetToCenter
-      }
-      return {
-        ...prevState,
-        offset: getOffset(),
-        oldOffset: offset
+
+    const bar = barWidth + barSpace
+    const totalWidth = bars.length * bar
+
+    const getNewOffsets = () => {
+      if (centerBarIndex !== undefined && !scrolling) {
+        const offsetToCenter = totalWidth - bar * centerBarIndex + (bar - width) / 2
+        const getOffset = () => {
+          if (offsetToCenter < 0) return 0
+          if (offsetToCenter + width > totalWidth) return totalWidth - width
+          return offsetToCenter
+        }
+        return {
+          ...prevState,
+          offset: getOffset(),
+          oldOffset: offset
+        }
       }
     }
 
-    return null
+    return {
+      ...prevState,
+      ...getNewOffsets(),
+      totalWidth
+    }
   }
 }

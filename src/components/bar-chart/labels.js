@@ -39,9 +39,9 @@ export default ({
   width,
   offset,
   oldOffset,
-  centerBarIndex
+  centerBarIndex,
+  totalWidth
 }) => {
-  const totalWidth = labels.length * (barWidth + barSpace)
   const left = width + oldOffset - totalWidth
   return (
     <Container>

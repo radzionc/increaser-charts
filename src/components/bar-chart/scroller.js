@@ -3,7 +3,6 @@ import styled from 'styled-components'
 
 import { animationStyle } from '../styles'
 
-
 const Container = styled.div`
   position: relative;
   height: 20px;
@@ -34,9 +33,8 @@ const Position = styled.div`
 
 class Scroller extends React.Component {
   render() {
-    const { oldOffset, offset, barWidth, barSpace, barsNumber, width } = this.props
+    const { totalWidth, offset, oldOffset, width } = this.props
 
-    const totalWidth = (barsNumber * (barWidth + barSpace))
     const periodWidth = (width * 100) / totalWidth
     const getMargin = offset => ((totalWidth  - (offset + width)) / totalWidth) * 100
     const periodMargin = getMargin(oldOffset)
