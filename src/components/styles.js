@@ -2,7 +2,7 @@ import { keyframes, css } from 'styled-components'
 
 const barAnimation = (props) => keyframes`
   to {
-    transform: translateX(${props.offset + Math.random() * 0.0000001}px);
+    transform: translateX(${props.offset}px);
   }
 `
 

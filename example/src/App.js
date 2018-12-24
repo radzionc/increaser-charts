@@ -54,6 +54,7 @@ class App extends React.Component {
             barSpace={4}
             centerBarIndex={centerBarIndex}
             onBarSelect={(centerBarIndex) => this.setState({ centerBarIndex })}
+            selectCenterBarOnScroll={true}
           />
         </Wrapper>
         <TimeWaitsForNoOne

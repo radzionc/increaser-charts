@@ -26,7 +26,8 @@ export default class BarChart extends React.Component {
     super(props)
     this.state = {
       oldOffset: 0,
-      offset: 0
+      offset: 0,
+      scrolling: false
     }
   }
 
@@ -39,11 +40,22 @@ export default class BarChart extends React.Component {
       onBarSelect,
       centerBarIndex
     } = this.props
-    const { width, height, offset, oldOffset } = this.state
+    const { width, height, offset, oldOffset, scrolling } = this.state
 
     const barsProps = { width, height, bars: bars.map(b => b.items), barWidth, barSpace, onBarSelect, centerBarIndex, offset, oldOffset }
-    const scrollerProps = { offset, oldOffset, barWidth, barSpace, barsNumber: bars.length, width, onDrag: this.onScroll }
     const labelsProps = { centerBarIndex, width, offset, oldOffset, labels: bars.map(b => b.label), barWidth, barSpace }
+    const scrollerProps = {
+      offset,
+      oldOffset,
+      barWidth,
+      barSpace,
+      barsNumber: bars.length,
+      width,
+      scrolling,
+      onDragStart: () => this.setState({ scrolling: true, oldOffset: this.state.offset }),
+      onDrag: this.onScroll,
+      onDragEnd: () => this.setState({ scrolling: false })
+    }
 
     return (
       <ThemeProvider theme={{ ...defaultTheme, ...theme}}>
@@ -74,23 +86,26 @@ export default class BarChart extends React.Component {
 
   onScroll = (movementX) => {
     const { width, offset } = this.state
-    const { barWidth, barSpace, bars } = this.props
+    const { barWidth, barSpace, bars, selectCenterBarOnScroll } = this.props
     const totalWidth = bars.length * (barWidth + barSpace)
     const additionalOffset = (totalWidth / width) * movementX
-    const newOffset = offset - additionalOffset
     const getOffset = () => {
+      const newOffset = offset - additionalOffset
       if (newOffset < 0) return 0
       if (newOffset + width > totalWidth) return totalWidth - width
       return newOffset
     }
-    console.log(movementX)
-    this.setState({ offset: getOffset(), oldOffset: offset })
+    const newOffset = getOffset()
+    this.setState({ offset: newOffset, oldOffset: newOffset })
+    // if (selectCenterBarOnScroll) {
+    //   const newCenterBarIndex = bars.findIndex((_, index) => index * (barWidth + barSpace) >= )
+    // }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { width, offset } = prevState
+    const { width, offset, scrolling } = prevState
     const { centerBarIndex, barWidth, barSpace, bars } = nextProps
-    if (centerBarIndex !== undefined) {
+    if (centerBarIndex !== undefined && !scrolling) {
       const realPosition = (barWidth + barSpace) * (centerBarIndex + 1)
       const desiredPosition = (width - barWidth - barSpace) / 2
       const totalWidth = bars.length * (barWidth + barSpace)
