@@ -24,7 +24,10 @@ export default ({
 
   const Selectable = () => (
     <rect
-      onTouchEnd={() => onBarSelect(index)}
+      onTouchEnd={(e) => {
+        onBarSelect(index)
+        e.preventDefault()
+      }}
       onClick={() => onBarSelect(index)}
       cursor={'pointer'}
       x={x - barSpace / 2}
