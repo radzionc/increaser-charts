@@ -54,6 +54,8 @@ export default class BarChart extends React.Component {
     }
     const labelsProps = {
       ...commonProps,
+      barWidth,
+      barSpace,
       centerBarIndex,
       labels: bars.map(b => b.label)
     }

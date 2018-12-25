@@ -46,7 +46,16 @@ export default ({
   return (
     <Container>
       <Labels offset={offset - oldOffset} style={{ left, width: totalWidth }}>
-        {labels.map((label, index) => <Label selected={centerBarIndex === index} key={index} width={barWidth} space={barSpace}>{label}</Label>)}
+        {labels.map((label, index) => (
+          <Label
+            selected={centerBarIndex === index}
+            key={index}
+            width={barWidth}
+            space={barSpace}
+          >
+            {label}
+          </Label>)
+        )}
       </Labels>
     </Container>
   )
