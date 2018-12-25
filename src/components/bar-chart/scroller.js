@@ -46,9 +46,9 @@ class Scroller extends React.Component {
         <Position
           offset={(animationOffset * width) / 100}
           style={positionStyle}
+          onTouchStart={e => e.preventDefault()}
           onDragStart={e => { e.preventDefault() }}
           onMouseDown={this.onMouseDown}
-          onTouchStart={this.onMouseDown}
         />
       </Container>
     )
@@ -60,18 +60,12 @@ class Scroller extends React.Component {
 
   componentDidMount() {
     document.addEventListener('mouseup', this.onMouseUp)
-    document.addEventListener('touchend', this.onMouseDown)
-
     document.addEventListener('mousemove', this.onMouseMove)
-    document.addEventListener('touchmove', this.onMouseMove)
   }
 
   componentWillUnmount() {
     document.removeEventListener('mouseup', this.onMouseUp)
-    document.removeEventListener('touchend', this.onMouseDown)
-
     document.removeEventListener('mousemove', this.onMouseMove)
-    document.removeEventListener('touchmove', this.onMouseMove)
   }
 
   onMouseDown = () => {
@@ -80,9 +74,8 @@ class Scroller extends React.Component {
 
   onMouseMove = e => {
     const { scrolling, onDrag } = this.props
-    if (scrolling && (e.movementX || e.changedTouches)) {
-      const { movementX } = e.movementX ? e : e.changedTouches[0]
-      onDrag(movementX)
+    if (scrolling && e.movementX) {
+      onDrag(e.movementX)
     }
   }
 
