@@ -5,7 +5,7 @@ import { BarChart } from 'increaser-charts'
 import { getMockBars } from './mock';
 
 const Page = styled.div`
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   background-color: #2c3e50;
   display: flex;
@@ -16,7 +16,7 @@ const Page = styled.div`
 
 const Wrapper = styled.div`
   position: relative;
-  height: 60%;
+  height: 60vh;
   width: 80%;
   padding: 20px;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
@@ -50,8 +50,8 @@ class App extends React.Component {
         <Wrapper>
           <BarChart
             bars={BARS}
-            barWidth={40}
-            barSpace={4}
+            barWidth={35}
+            barSpace={5}
             centerBarIndex={centerBarIndex}
             onBarSelect={(centerBarIndex) => this.setState({ centerBarIndex })}
             selectCenterBarOnScroll={true}

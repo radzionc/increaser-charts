@@ -67,22 +67,36 @@ export default class BarChart extends React.Component {
       onDragEnd: () => this.setState({ scrolling: false })
     }
 
+    const Content = () => (
+      <React.Fragment>
+        <BarsContainer ref={el => this.barsContainer = el}>
+          {height && <Bars {...barsProps} />}
+        </BarsContainer>
+        <Labels {...labelsProps}/>
+        <Scroller {...scrollerProps}/>
+      </React.Fragment>
+    )
+
     return (
       <ThemeProvider theme={{ ...defaultTheme, ...theme}}>
-        <RootContainer>
-          <BarsContainer ref={el => this.barsContainer = el}>
-            {width && <Bars {...barsProps} />}
-          </BarsContainer>
-          {width && <Labels {...labelsProps}/>}
-          {width && <Scroller {...scrollerProps}/>}
+        <RootContainer ref={el => this.RootContainer = el}>
+          {width && <Content/>}
         </RootContainer>
       </ThemeProvider>
     )
   }
 
+  componentDidUpdate() {
+    const { height } = this.barsContainer.getBoundingClientRect()
+    if (this.state.height !== height) {
+      this.setState({ height })
+    }
+  }
+
   componentDidMount() {
-    this.onResize()
     window.addEventListener('resize', this.onResize)
+    const { width } = this.RootContainer.getBoundingClientRect()
+    this.setState({ width })
   }
 
   componentWillUnmount() {

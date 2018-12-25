@@ -33,7 +33,6 @@ export default ({
     const height = bar.reduce((acc, { value }) => acc + value, 0)
     return height > acc ? height : acc
   }, 0)
-
   const barCommonProps = { height, barWidth, barSpace, oldOffset, offset, centerBarIndex, onBarSelect, highest }
   const left = width + oldOffset - totalWidth
   return (
