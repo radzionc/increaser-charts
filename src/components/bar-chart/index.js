@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 
-import { defaultTheme } from '../../constants/theme'
+import { DEFAULT_THEME } from '../constants'
 import Bars from './bars'
 import Labels from './labels'
 import Scroller from './scroller'
@@ -39,7 +39,7 @@ export default class BarChart extends React.Component {
       barSpace,
       onBarSelect,
       centerBarIndex,
-      showScroll
+      showScroll = true
     } = this.props
     const { width, height, offset, oldOffset, scrolling, totalWidth } = this.state
 
@@ -79,7 +79,7 @@ export default class BarChart extends React.Component {
     )
 
     return (
-      <ThemeProvider theme={{ ...defaultTheme, ...theme}}>
+      <ThemeProvider theme={{ ...DEFAULT_THEME, ...theme}}>
         <RootContainer ref={el => this.RootContainer = el}>
           {width && <Content/>}
         </RootContainer>

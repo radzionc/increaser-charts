@@ -57,28 +57,25 @@ const TimeWaitsForNoOne = styled.a`
   text-decoration: none;
 `
 
-const BoolParam = styled.div`
+const ParamContainer = styled.div`
   padding: 10px;
   margin: 10px;
   display: flex;
+  border-radius: 5px;
+  border: 1px solid gold;
+  height: 80px;
+  width: 280px;
+`
+
+const BoolParam = styled(ParamContainer)`
   flex-direction: row;
   align-items: center;
   justify-content: space-between; 
-  border-radius: 5px;
-  border: 1px solid gold;
-  height: 80px;
 `
 
-const RangeParam = styled.div`
-  margin: 10px;
-  display: flex;
+const RangeParam = styled(ParamContainer)`
   flex-direction: column;
   justify-content: space-around;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid gold;
-  height: 80px;
-  min-width: 200px;
 `
 
 const Param = styled.h4`
@@ -93,7 +90,7 @@ class App extends React.Component {
     this.state = {
       centerBarIndex: undefined,
       barWidth: 35,
-      barSpace: 5,
+      barSpace: 8,
       barsNumber,
       barsWithLabels,
       bars: getMockBars(60, barsWithLabels),
@@ -181,7 +178,7 @@ class App extends React.Component {
               <Slider
                 value={bars.length}
                 min={5}
-                max={300}
+                max={100}
                 step={1}
                 onChange={(_, barsNumber) => this.changeBarsNumber(barsNumber)}
               />

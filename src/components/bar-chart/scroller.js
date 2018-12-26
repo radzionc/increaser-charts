@@ -34,10 +34,11 @@ const Position = styled.div`
 class Scroller extends React.Component {
   render() {
     const { totalWidth, offset, oldOffset, width } = this.props
-
-    const periodWidth = (width * 100) / totalWidth
     const getMargin = offset => ((totalWidth  - (offset + width)) / totalWidth) * 100
     const periodMargin = getMargin(oldOffset)
+    if (periodMargin < 0) return null
+    
+    const periodWidth = (width * 100) / totalWidth
     const animationOffset = getMargin(offset) - periodMargin
     const positionStyle = { width: `${periodWidth}%`, marginLeft: `${periodMargin}%` }
     return (
