@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import { BarChart } from 'increaser-charts'
 import { getMockBars } from './mock';
+import Switch from '@material-ui/core/Switch'
 
 const Page = styled.div`
   min-height: 100vh;
@@ -15,7 +16,6 @@ const Page = styled.div`
 `
 
 const Wrapper = styled.div`
-  position: relative;
   height: 60vh;
   width: 80%;
   padding: 20px;
@@ -30,6 +30,15 @@ const Wrapper = styled.div`
   }
 `
 
+const Panel = styled.div`
+  height: 120px;
+  width: 80%;
+  padding: 20px;
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+  border-radius: 5px;
+
+`
+
 const TimeWaitsForNoOne = styled.a`
   margin: 40px;
   color: white;
@@ -39,26 +48,54 @@ const TimeWaitsForNoOne = styled.a`
   text-decoration: none;
 `
 
-const BARS = getMockBars(60)
+const BoolParam = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 250px;
+`
+
+const Param = styled.h4`
+  color: white;
+`
 
 class App extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { }
+    const barsNumber = 60
+    const barsWithLabels = true
+    this.state = {
+      centerBarIndex: undefined,
+      barWidth: 35,
+      barSpace: 5,
+      barsNumber,
+      barsWithLabels,
+      bars: getMockBars(60, barsWithLabels),
+      showScroll: true,
+      selectCenterBarOnScroll: true
+    }
   }
 
   render() {
-    const { centerBarIndex } = this.state
+    const {
+      centerBarIndex,
+      barWidth,
+      barSpace,
+      bars,
+      selectCenterBarOnScroll,
+      barsWithLabels
+    } = this.state
     return (
       <Page>
         <Wrapper>
           <BarChart
-            bars={BARS}
-            barWidth={35}
-            barSpace={5}
+            bars={bars}
+            barWidth={barWidth}
+            barSpace={barSpace}
             centerBarIndex={centerBarIndex}
             onBarSelect={(centerBarIndex) => this.setState({ centerBarIndex })}
-            selectCenterBarOnScroll={true}
+            selectCenterBarOnScroll={selectCenterBarOnScroll}
           />
         </Wrapper>
         <TimeWaitsForNoOne
@@ -67,8 +104,35 @@ class App extends React.Component {
         >
           Time Waits For No One, and It Won't Wait For Me
         </TimeWaitsForNoOne>
+        <Panel>
+          <BoolParam>
+            <Param>selectCenterBarOnScroll: </Param>
+            <Switch
+              checked={selectCenterBarOnScroll}
+              onChange={() => this.setState({ selectCenterBarOnScroll: !selectCenterBarOnScroll })}
+              value="checkedB"
+            />
+          </BoolParam>
+          <BoolParam>
+            <Param>bars with labels: </Param>
+            <Switch
+              checked={barsWithLabels}
+              onChange={this.toggleBarsWithLabels}
+              value="checkedB"
+            />
+          </BoolParam>
+        </Panel>
       </Page>
     )
+  }
+
+  toggleBarsWithLabels = () => {
+    const { barsNumber, barsWithLabels } = this.state
+    const newBarsWithLabels = !barsWithLabels
+    this.setState({
+      barsWithLabels: newBarsWithLabels,
+      bars: getMockBars(barsNumber, newBarsWithLabels)
+    })
   }
 }
 

@@ -58,11 +58,14 @@ const getMockBarItems = () => {
   return getSubbars(height, COLORS, [])
 }
 
-export const getMockBars = (number) => {
+
+export const getMockBars = (number, withLabels = true) => {
   const bars = new Array(number)
     .fill(0)
     .map((_, index) => {
       const items = getMockBarItems()
+      if (!withLabels) return { items }
+      
       const getLabel = () => {
         if (index + 1 === number) return 'Today'
         const today = new Date()

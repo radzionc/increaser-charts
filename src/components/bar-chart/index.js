@@ -52,12 +52,13 @@ export default class BarChart extends React.Component {
       centerBarIndex,
       items: bars.map(b => b.items),
     }
+    const labels = bars.map(b => b.label)
     const labelsProps = {
       ...commonProps,
       barWidth,
       barSpace,
       centerBarIndex,
-      labels: bars.map(b => b.label)
+      labels
     }
     const scrollerProps = {
       ...commonProps,
@@ -66,13 +67,12 @@ export default class BarChart extends React.Component {
       onDrag: this.onScroll,
       onDragEnd: () => this.setState({ scrolling: false })
     }
-
     const Content = () => (
       <React.Fragment>
         <BarsContainer ref={el => this.barsContainer = el}>
           {height && <Bars {...barsProps} />}
         </BarsContainer>
-        <Labels {...labelsProps}/>
+        {!labels.every(l => !l) && <Labels {...labelsProps}/>}
         <Scroller {...scrollerProps}/>
       </React.Fragment>
     )
