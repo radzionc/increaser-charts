@@ -38,7 +38,8 @@ export default class BarChart extends React.Component {
       barWidth,
       barSpace,
       onBarSelect,
-      centerBarIndex
+      centerBarIndex,
+      showScroll
     } = this.props
     const { width, height, offset, oldOffset, scrolling, totalWidth } = this.state
 
@@ -73,7 +74,7 @@ export default class BarChart extends React.Component {
           {height && <Bars {...barsProps} />}
         </BarsContainer>
         {!labels.every(l => !l) && <Labels {...labelsProps}/>}
-        <Scroller {...scrollerProps}/>
+        {showScroll && <Scroller {...scrollerProps}/>}
       </React.Fragment>
     )
 

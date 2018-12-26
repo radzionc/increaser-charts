@@ -2,8 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { BarChart } from 'increaser-charts'
-import { getMockBars } from './mock';
+import { getMockBars } from './mock'
 import Switch from '@material-ui/core/Switch'
+import Slider from '@material-ui/lab/Slider'
 
 const Page = styled.div`
   min-height: 100vh;
@@ -31,12 +32,20 @@ const Wrapper = styled.div`
 `
 
 const Panel = styled.div`
-  height: 120px;
   width: 80%;
   padding: 20px;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+`
 
+const PanelRow = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
 `
 
 const TimeWaitsForNoOne = styled.a`
@@ -49,11 +58,27 @@ const TimeWaitsForNoOne = styled.a`
 `
 
 const BoolParam = styled.div`
+  padding: 10px;
+  margin: 10px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  width: 250px;
+  justify-content: space-between; 
+  border-radius: 5px;
+  border: 1px solid gold;
+  height: 80px;
+`
+
+const RangeParam = styled.div`
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid gold;
+  height: 80px;
+  min-width: 200px;
 `
 
 const Param = styled.h4`
@@ -84,7 +109,8 @@ class App extends React.Component {
       barSpace,
       bars,
       selectCenterBarOnScroll,
-      barsWithLabels
+      barsWithLabels,
+      showScroll
     } = this.state
     return (
       <Page>
@@ -96,6 +122,7 @@ class App extends React.Component {
             centerBarIndex={centerBarIndex}
             onBarSelect={(centerBarIndex) => this.setState({ centerBarIndex })}
             selectCenterBarOnScroll={selectCenterBarOnScroll}
+            showScroll={showScroll}
           />
         </Wrapper>
         <TimeWaitsForNoOne
@@ -105,22 +132,61 @@ class App extends React.Component {
           Time Waits For No One, and It Won't Wait For Me
         </TimeWaitsForNoOne>
         <Panel>
-          <BoolParam>
-            <Param>selectCenterBarOnScroll: </Param>
-            <Switch
-              checked={selectCenterBarOnScroll}
-              onChange={() => this.setState({ selectCenterBarOnScroll: !selectCenterBarOnScroll })}
-              value="checkedB"
-            />
-          </BoolParam>
-          <BoolParam>
-            <Param>bars with labels: </Param>
-            <Switch
-              checked={barsWithLabels}
-              onChange={this.toggleBarsWithLabels}
-              value="checkedB"
-            />
-          </BoolParam>
+          <PanelRow>
+            <BoolParam>
+              <Param>select center bar on scroll: </Param>
+              <Switch
+                checked={selectCenterBarOnScroll}
+                onChange={() => this.setState({ selectCenterBarOnScroll: !selectCenterBarOnScroll })}
+              />
+            </BoolParam>
+            <BoolParam>
+              <Param>bars with labels: </Param>
+              <Switch
+                checked={barsWithLabels}
+                onChange={this.toggleBarsWithLabels}
+              />
+            </BoolParam>
+            <BoolParam>
+              <Param>show scroll: </Param>
+              <Switch
+                checked={showScroll}
+                onChange={() => this.setState({ showScroll: !showScroll })}
+              />
+            </BoolParam>
+          </PanelRow>
+          <PanelRow>
+            <RangeParam>
+              <Param>bar width: {barWidth}</Param>
+              <Slider
+                value={barWidth}
+                min={5}
+                max={300}
+                step={1}
+                onChange={(_, barWidth) => this.setState({ barWidth })}
+              />
+            </RangeParam>
+            <RangeParam>
+              <Param>bar space: {barSpace}</Param>
+              <Slider
+                value={barSpace}
+                min={5}
+                max={300}
+                step={1}
+                onChange={(_, barSpace) => this.setState({ barSpace })}
+              />
+            </RangeParam>
+            <RangeParam>
+              <Param>bars number: {bars.length}</Param>
+              <Slider
+                value={bars.length}
+                min={5}
+                max={300}
+                step={1}
+                onChange={(_, barsNumber) => this.changeBarsNumber(barsNumber)}
+              />
+            </RangeParam>
+          </PanelRow>
         </Panel>
       </Page>
     )
@@ -133,6 +199,12 @@ class App extends React.Component {
       barsWithLabels: newBarsWithLabels,
       bars: getMockBars(barsNumber, newBarsWithLabels)
     })
+  }
+
+  changeBarsNumber = (barsNumber) => {
+    const { barsWithLabels } = this.state
+    const bars = getMockBars(barsNumber, barsWithLabels)
+    this.setState({ bars })
   }
 }
 
