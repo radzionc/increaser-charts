@@ -156,6 +156,13 @@ export default class BarChart extends React.Component {
     const totalWidth = bars.length * bar
     const getNewOffsets = () => {
       if (centerBarIndex !== undefined && !scrolling) {
+        const barsWidth = bars.length * bar
+        if (barsWidth < width) {
+          return {
+            oldOffset: 0,
+            offset: 0
+          }
+        }
         const offsetToCenter = totalWidth - bar * centerBarIndex - (width + bar) / 2
         const getOffset = () => {
           if (offsetToCenter < 0) return 0
@@ -163,7 +170,6 @@ export default class BarChart extends React.Component {
           return offsetToCenter
         }
         return {
-          ...prevState,
           offset: getOffset(),
           oldOffset: offset
         }
