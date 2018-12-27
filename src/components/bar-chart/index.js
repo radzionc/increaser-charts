@@ -2,9 +2,11 @@ import React from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 
 import { DEFAULT_THEME } from '../constants'
-import Bars from './bars'
-import Labels from './labels'
 import Scroller from './scroller'
+import Bar from './bar'
+import Label from './label'
+import DataContainer from './data-container'
+import { sum } from '../utils'
 
 const RootContainer = styled.div`
   height: 100%;
@@ -13,12 +15,25 @@ const RootContainer = styled.div`
   flex-direction: column;
 `
 
-const BarsContainer = styled.div`
+const BarsView = styled.svg`
   height: 100%;
   width: 100%;
+`
+
+const LabelsContainer = styled.div`
+  height: 40px;
+  width: 100%;
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  display: flex;
+  user-select: none;
+`
+
+const Line = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${props => props.theme.mainColor};
 `
 
 export default class BarChart extends React.Component {
@@ -52,47 +67,68 @@ export default class BarChart extends React.Component {
     const startIndex = getStartIndex()
     const lastIndex = Math.ceil((totalWidth - oldOffset + (offset < oldOffset ? oldOffset - offset : 0)) / bar)
     const slicedBars = bars.slice(startIndex, lastIndex)
-    const commonProps = { totalWidth, width, offset, oldOffset }
     const highest = bars.map(b => b.items).reduce((acc, bar) => {
-      const height = bar.reduce((acc, { value }) => acc + value, 0)
+      const height = sum(bar)
       return height > acc ? height : acc
     }, 0)
-    const barsProps = {
-      ...commonProps,
-      highest,
-      height,
-      barWidth,
-      barSpace,
-      onBarSelect,
-      centerBarIndex,
-      startIndex,
-      items: slicedBars.map(b => b.items),
-    }
     const labels = slicedBars.map(b => b.label)
-    const labelsProps = {
-      ...commonProps,
-      startIndex,
-      barWidth,
-      barSpace,
-      centerBarIndex,
-      labels
-    }
+
     const scrollerProps = {
-      ...commonProps,
+      totalWidth,
+      width,
+      offset,
+      oldOffset,
       scrolling,
       onDragStart: () => this.setState({ scrolling: true, oldOffset: this.state.offset }),
       onDrag: this.onScroll,
       onDragEnd: () => this.setState({ scrolling: false })
     }
-    const Content = () => (
-      <React.Fragment>
-        <BarsContainer ref={el => this.barsContainer = el}>
-          {height && <Bars {...barsProps} />}
-        </BarsContainer>
-        {!labels.every(l => !l) && <Labels {...labelsProps}/>}
-        {showScroll && <Scroller {...scrollerProps}/>}
-      </React.Fragment>
-    )
+    const showLabels = !labels.every(l => !l)
+    const barCommonProps = { startIndex, height, barWidth, barSpace, oldOffset, offset, centerBarIndex, onBarSelect, highest }
+    const dataContainerProps = { barTotalWidth: bar, width, offset, oldOffset, totalWidth, startIndex }
+    const Content = () => {
+      const Bars = () => {
+        if (!height) return null
+        return slicedBars.map(({ items }, index) => (
+          <Bar
+            {...barCommonProps}
+            bar={items}
+            index={index}
+            key={index}
+          />
+        ))
+      }
+      const Labels = () => {
+        if (!showLabels) return null
+
+        return (
+          <LabelsContainer>
+            {labels.map((label, index) => (
+              <Label
+                width={barWidth}
+                space={barSpace}
+                selected={centerBarIndex === index + startIndex}
+                key={index + startIndex}
+              >
+                {label}
+              </Label>)
+            )}
+          </LabelsContainer>
+        )
+      }
+      return (
+        <React.Fragment>
+          <DataContainer {...dataContainerProps}>
+            <BarsView ref={el => this.barsContainer = el}>
+              <Bars/>
+            </BarsView>
+            <Line/>
+            <Labels/>
+          </DataContainer>
+          {showScroll && <Scroller {...scrollerProps} />}
+        </React.Fragment>
+      )
+    }
 
     return (
       <ThemeProvider theme={{ ...DEFAULT_THEME, ...theme}}>

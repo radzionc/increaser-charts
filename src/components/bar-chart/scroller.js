@@ -15,14 +15,14 @@ const Line = styled.div`
   position: absolute;
   width: 100%;
   height: 6px;
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: ${props => props.theme.scrollerBackgroundColor};
 `
 
 const Position = styled.div`
   cursor: pointer;
   position: absolute;
   height: 6px;
-  background-color: ${props => props.theme.textColor};
+  background-color: ${props => props.theme.mainColor};
   border-radius: 3px;
   &:hover {
     height: 8px;
@@ -48,7 +48,7 @@ class Scroller extends React.Component {
           offset={(animationOffset * width) / 100}
           style={positionStyle}
           onTouchStart={e => e.preventDefault()}
-          onDragStart={e => { e.preventDefault() }}
+          onDragStart={e => e.preventDefault()}
           onMouseDown={this.onMouseDown}
         />
       </Container>
