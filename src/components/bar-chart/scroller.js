@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { animationStyle } from '../styles'
+import { animationStyle } from './styles'
 
 const Container = styled.div`
   position: relative;

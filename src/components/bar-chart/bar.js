@@ -1,5 +1,5 @@
 import React from 'react'
-import { sum } from '../utils';
+import { sum } from '../../utils';
 
 export default ({
   bar,

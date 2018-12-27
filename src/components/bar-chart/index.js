@@ -1,12 +1,12 @@
 import React from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 
-import { DEFAULT_THEME } from '../constants'
+import { DEFAULT_THEME } from '../../constants'
 import Scroller from './scroller'
 import Bar from './bar'
 import Label from './label'
 import DataContainer from './data-container'
-import { sum } from '../utils'
+import { sum } from '../../utils'
 
 const RootContainer = styled.div`
   height: 100%;
