@@ -27,28 +27,16 @@ export default ({
   centerBarIndex,
   offset,
   oldOffset,
-  totalWidth
+  totalWidth,
+  startIndex,
+  highest,
 }) => {
-  const highest = items.reduce((acc, bar) => {
-    const height = bar.reduce((acc, { value }) => acc + value, 0)
-    return height > acc ? height : acc
-  }, 0)
   const barCommonProps = { height, barWidth, barSpace, oldOffset, offset, centerBarIndex, onBarSelect, highest }
   const left = width + oldOffset - totalWidth
-
-  const bar = barWidth + barSpace
-  const getStartIndex = () => {
-    const startIndex = Math.floor((totalWidth - width - oldOffset - (offset > oldOffset ? offset  - oldOffset : 0)) / bar)
-    if (startIndex < 0) return 0
-
-    return startIndex
-  }
-  const startIndex = getStartIndex()
-  const lastIndex = Math.ceil((totalWidth - oldOffset + (offset < oldOffset ? oldOffset - offset : 0)) / bar)
   return (
     <Container>
       <BarsView style={{ width: totalWidth, left }} offset={offset - oldOffset}>
-        {items.slice(startIndex, lastIndex).map((bar, index) => <Bar {...barCommonProps} bar={bar} index={index + startIndex} key={index + startIndex} />)}
+        {items.map((bar, index) => <Bar {...barCommonProps} bar={bar} index={index + startIndex} key={index + startIndex} />)}
       </BarsView>
     </Container>
   )

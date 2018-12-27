@@ -42,20 +42,36 @@ export default class BarChart extends React.Component {
       showScroll = true
     } = this.props
     const { width, height, offset, oldOffset, scrolling, totalWidth } = this.state
-
+    const bar = barWidth + barSpace
+    const getStartIndex = () => {
+      const startIndex = Math.floor((totalWidth - width - oldOffset - (offset > oldOffset ? offset  - oldOffset : 0)) / bar)
+      if (startIndex < 0) return 0
+  
+      return startIndex
+    }
+    const startIndex = getStartIndex()
+    const lastIndex = Math.ceil((totalWidth - oldOffset + (offset < oldOffset ? oldOffset - offset : 0)) / bar)
+    const slicedBars = bars.slice(startIndex, lastIndex)
     const commonProps = { totalWidth, width, offset, oldOffset }
+    const highest = bars.map(b => b.items).reduce((acc, bar) => {
+      const height = bar.reduce((acc, { value }) => acc + value, 0)
+      return height > acc ? height : acc
+    }, 0)
     const barsProps = {
       ...commonProps,
+      highest,
       height,
       barWidth,
       barSpace,
       onBarSelect,
       centerBarIndex,
-      items: bars.map(b => b.items),
+      startIndex,
+      items: slicedBars.map(b => b.items),
     }
-    const labels = bars.map(b => b.label)
+    const labels = slicedBars.map(b => b.label)
     const labelsProps = {
       ...commonProps,
+      startIndex,
       barWidth,
       barSpace,
       centerBarIndex,
@@ -132,6 +148,8 @@ export default class BarChart extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { width, offset, scrolling } = prevState
+    if (!width) return null
+
     const { centerBarIndex, barWidth, barSpace, bars } = nextProps
 
     const bar = barWidth + barSpace
