@@ -18,11 +18,12 @@ const DataContainer = styled.div`
 `
 
 export default ({ barTotalWidth, width, offset, oldOffset, totalWidth, startIndex, children }) => {
-  const left = width + oldOffset - totalWidth + startIndex * barTotalWidth
+  const left = totalWidth < width ? (width - totalWidth) / 2 : width + oldOffset - totalWidth + startIndex * barTotalWidth
   const containerWidth = totalWidth - startIndex * barTotalWidth
   const animationOffset = offset - oldOffset
+  console.log(width, totalWidth)
   const style = { left, width: containerWidth }
-  
+
   return (
     <Wrapper>
       <DataContainer offset={animationOffset} style={style}>

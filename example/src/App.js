@@ -177,7 +177,7 @@ class App extends React.Component {
               <Param>bars number: {bars.length}</Param>
               <Slider
                 value={bars.length}
-                min={5}
+                min={0}
                 max={100}
                 step={1}
                 onChange={(_, barsNumber) => this.changeBarsNumber(barsNumber)}

@@ -14,7 +14,7 @@ export default ({
 }) => {
   const barTotalWidth = barWidth + barSpace
   const realIndex = index + startIndex
-  const x = barTotalWidth * index
+  const x = barTotalWidth * index + barSpace
 
   const valueToHeight = value => (value * height) / highest
       

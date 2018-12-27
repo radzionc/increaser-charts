@@ -57,37 +57,25 @@ export default class BarChart extends React.Component {
       showScroll = true
     } = this.props
     const { width, height, offset, oldOffset, scrolling, totalWidth } = this.state
-    const bar = barWidth + barSpace
+    const barTotalWidth = barWidth + barSpace
     const getStartIndex = () => {
-      const startIndex = Math.floor((totalWidth - width - oldOffset - (offset > oldOffset ? offset  - oldOffset : 0)) / bar)
+      const startIndex = Math.floor((totalWidth - width - oldOffset - (offset > oldOffset ? offset  - oldOffset : 0)) / barTotalWidth)
       if (startIndex < 0) return 0
   
       return startIndex
     }
     const startIndex = getStartIndex()
-    const lastIndex = Math.ceil((totalWidth - oldOffset + (offset < oldOffset ? oldOffset - offset : 0)) / bar)
+    const lastIndex = Math.ceil((totalWidth - oldOffset + (offset < oldOffset ? oldOffset - offset : 0)) / barTotalWidth)
     const slicedBars = bars.slice(startIndex, lastIndex)
     const highest = bars.map(b => b.items).reduce((acc, bar) => {
       const height = sum(bar)
       return height > acc ? height : acc
     }, 0)
-    const labels = slicedBars.map(b => b.label)
-
-    const scrollerProps = {
-      totalWidth,
-      width,
-      offset,
-      oldOffset,
-      scrolling,
-      onDragStart: () => this.setState({ scrolling: true, oldOffset: this.state.offset }),
-      onDrag: this.onScroll,
-      onDragEnd: () => this.setState({ scrolling: false })
-    }
-    const showLabels = !labels.every(l => !l)
-    const barCommonProps = { startIndex, height, barWidth, barSpace, oldOffset, offset, centerBarIndex, onBarSelect, highest }
-    const dataContainerProps = { barTotalWidth: bar, width, offset, oldOffset, totalWidth, startIndex }
+    
     const Content = () => {
+      if (!width) return null
       const Bars = () => {
+        const barCommonProps = { startIndex, height, barWidth, barSpace, oldOffset, offset, centerBarIndex, onBarSelect, highest }
         if (!height) return null
         return slicedBars.map(({ items }, index) => (
           <Bar
@@ -95,12 +83,14 @@ export default class BarChart extends React.Component {
             bar={items}
             index={index}
             key={index}
-          />
-        ))
+            />
+          )
+        )
       }
       const Labels = () => {
-        if (!showLabels) return null
-
+        const labels = slicedBars.map(b => b.label)
+        if (labels.every(l => !l)) return null
+        
         return (
           <LabelsContainer>
             {labels.map((label, index) => (
@@ -114,7 +104,18 @@ export default class BarChart extends React.Component {
               </Label>)
             )}
           </LabelsContainer>
-        )
+      )
+      }
+      const dataContainerProps = { barTotalWidth, width, offset, oldOffset, totalWidth, startIndex }
+      const scrollerProps = {
+        totalWidth,
+        width,
+        offset,
+        oldOffset,
+        scrolling,
+        onDragStart: () => this.setState({ scrolling: true, oldOffset: this.state.offset }),
+        onDrag: this.onScroll,
+        onDragEnd: () => this.setState({ scrolling: false })
       }
       return (
         <React.Fragment>
@@ -122,7 +123,7 @@ export default class BarChart extends React.Component {
             <BarsView ref={el => this.barsContainer = el}>
               <Bars/>
             </BarsView>
-            <Line/>
+            {bars.length > 0 && <Line/>}
             <Labels/>
           </DataContainer>
           {showScroll && <Scroller {...scrollerProps} />}
@@ -133,7 +134,7 @@ export default class BarChart extends React.Component {
     return (
       <ThemeProvider theme={{ ...DEFAULT_THEME, ...theme}}>
         <RootContainer ref={el => this.RootContainer = el}>
-          {width && <Content/>}
+          <Content/>
         </RootContainer>
       </ThemeProvider>
     )
@@ -189,7 +190,7 @@ export default class BarChart extends React.Component {
     const { centerBarIndex, barWidth, barSpace, bars } = nextProps
 
     const bar = barWidth + barSpace
-    const totalWidth = bars.length * bar
+    const totalWidth = bars.length * bar + barSpace
     const getNewOffsets = () => {
       if (centerBarIndex !== undefined && !scrolling) {
         const barsWidth = bars.length * bar
@@ -211,7 +212,6 @@ export default class BarChart extends React.Component {
         }
       }
     }
-
     return {
       ...prevState,
       ...getNewOffsets(),
