@@ -4,7 +4,8 @@
 
 [![NPM](https://img.shields.io/npm/v/increaser-charts.svg)](https://www.npmjs.com/package/increaser-charts)
 
-![alt text](https://cdn-images-1.medium.com/max/800/1*ifFL6CQARUfH9Xxdly0Dsg.gif)
+![alt text](https://cdn-images-1.medium.com/max/800/1*_Qn-0cLfmsmmpoaTBI3ctw.gif)
+
 
 ## [Demo](https://rodionchachura.github.io/increaser-charts/)
 
