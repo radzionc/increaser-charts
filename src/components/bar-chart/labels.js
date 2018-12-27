@@ -25,8 +25,7 @@ const Label = styled.p`
   font-size: ${props => props.theme.labelFontSize * (props.selected ? 1.2 : 1)}px;
   font-weight: ${props => props.selected ? 'bold' : undefined};
   width: ${props => props.width}px;
-  margin: auto;
-  padding-right: ${props => props.space}px;
+  margin-right: ${props => props.space}px;
   height: 100%;
   text-align: center;
   color: ${props => props.theme.textColor};
@@ -40,16 +39,18 @@ export default ({
   offset,
   oldOffset,
   centerBarIndex,
-  totalWidth
+  totalWidth,
+  startIndex
 }) => {
-  const left = width + oldOffset - totalWidth
+  const left = width + oldOffset - totalWidth + startIndex * (barWidth + barSpace)
+  const containerWidth = totalWidth - startIndex * (barWidth + barSpace)
   return (
     <Container>
-      <Labels offset={offset - oldOffset} style={{ left, width: totalWidth }}>
+      <Labels offset={offset - oldOffset} style={{ left, width: containerWidth }}>
         {labels.map((label, index) => (
           <Label
-            selected={centerBarIndex === index}
-            key={index}
+            selected={centerBarIndex === index + startIndex}
+            key={index + startIndex}
             width={barWidth}
             space={barSpace}
           >
