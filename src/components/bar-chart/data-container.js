@@ -21,7 +21,6 @@ export default ({ barTotalWidth, width, offset, oldOffset, totalWidth, startInde
   const left = totalWidth < width ? (width - totalWidth) / 2 : width + oldOffset - totalWidth + startIndex * barTotalWidth
   const containerWidth = totalWidth - startIndex * barTotalWidth
   const animationOffset = offset - oldOffset
-  console.log(width, totalWidth)
   const style = { left, width: containerWidth }
 
   return (

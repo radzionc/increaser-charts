@@ -133,7 +133,7 @@ export default class BarChart extends React.Component {
 
     return (
       <ThemeProvider theme={{ ...DEFAULT_THEME, ...theme}}>
-        <RootContainer ref={el => this.RootContainer = el}>
+        <RootContainer ref={el => this.rootContainer = el}>
           <Content/>
         </RootContainer>
       </ThemeProvider>
@@ -149,7 +149,7 @@ export default class BarChart extends React.Component {
 
   componentDidMount() {
     window.addEventListener('resize', this.onResize)
-    const { width } = this.RootContainer.getBoundingClientRect()
+    const { width } = this.rootContainer.getBoundingClientRect()
     this.setState({ width })
   }
 
@@ -158,7 +158,8 @@ export default class BarChart extends React.Component {
   }
 
   onResize = () => {
-    const { width, height } = this.barsContainer.getBoundingClientRect()
+    const { width } = this.rootContainer.getBoundingClientRect()
+    const { height } = this.barsContainer.getBoundingClientRect()
     this.setState({ width, height })
   }
 
