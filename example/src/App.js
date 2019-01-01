@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Switch } from '@material-ui/core'
+import { Slider } from '@material-ui/lab'
 
 import { BarChart } from 'increaser-charts'
 
@@ -13,8 +15,160 @@ const Page = styled.div`
   align-items: center;
 `
 
-export default () => (
-  <Page>
-    <BarChart/>
-  </Page>
-)
+const Container = styled.div`
+  width: 80%;
+  padding: 20px;
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+  border-radius: 5px;
+  display: flex;
+`
+
+const Wrapper = styled(Container)`
+  height: 60vh;
+  align-items: center;
+  justify-content: center;
+  @media (max-width: 640px) {
+    width: 100%;
+    box-shadow: none
+  }
+`
+
+const Panel = styled(Container)`
+  flex-direction: column;
+`
+
+const PanelRow = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+`
+
+const ParamContainer = styled.div`
+  padding: 10px;
+  margin: 10px;
+  display: flex;
+  border-radius: 5px;
+  border: 1px solid gold;
+  height: 80px;
+  width: 280px;
+`
+
+const BoolParam = styled(ParamContainer)`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`
+
+const RangeParam = styled(ParamContainer)`
+  flex-direction: column;
+  justify-content: space-around;
+`
+
+const Param = styled.h4`
+  color: white;
+`
+
+export default class App extends React.Component {
+  constructor(props) {
+    super(props)
+    const barsNumber = 60
+    const barsWithLabels = true
+    this.state = {
+      centerBarIndex: undefined,
+      barWidth: 35,
+      barSpace: 8,
+      barsNumber,
+      barsWithLabels,
+      bars: [],
+      showScroll: true,
+      selectCenterBarOnScroll: true
+    }
+  }
+
+  render() {
+    const {
+      bars,
+      barWidth,
+      barSpace,
+      centerBarIndex,
+      selectCenterBarOnScroll,
+      showScroll,
+      barsWithLabels,
+      barsNumber
+    } = this.state
+    return (
+      <Page>
+        <Wrapper>
+          <BarChart
+            bars={bars}
+            barWidth={barWidth}
+            barSpace={barSpace}
+            centerBarIndex={centerBarIndex}
+            onBarSelect={(centerBarIndex) => this.setState({ centerBarIndex })}
+            selectCenterBarOnScroll={selectCenterBarOnScroll}
+            showScroll={showScroll}
+          />
+        </Wrapper>
+        <Panel>
+          <PanelRow>
+            <BoolParam>
+              <Param>select center bar on scroll: </Param>
+              <Switch
+                checked={selectCenterBarOnScroll}
+                onChange={() => this.setState({ selectCenterBarOnScroll: !selectCenterBarOnScroll })}
+              />
+            </BoolParam>
+            <BoolParam>
+              <Param>bars with labels: </Param>
+              <Switch
+                checked={barsWithLabels}
+                onChange={() => this.setState({ barsWithLabels: !barsWithLabels })}
+              />
+            </BoolParam>
+            <BoolParam>
+              <Param>show scroll: </Param>
+              <Switch
+                checked={showScroll}
+                onChange={() => this.setState({ showScroll: !showScroll })}
+              />
+            </BoolParam>
+          </PanelRow>
+          <PanelRow>
+            <RangeParam>
+              <Param>bar width: {barWidth}</Param>
+              <Slider
+                value={barWidth}
+                min={5}
+                max={300}
+                step={1}
+                onChange={(_, barWidth) => this.setState({ barWidth })}
+              />
+            </RangeParam>
+            <RangeParam>
+              <Param>bar space: {barSpace}</Param>
+              <Slider
+                value={barSpace}
+                min={5}
+                max={300}
+                step={1}
+                onChange={(_, barSpace) => this.setState({ barSpace })}
+              />
+            </RangeParam>
+            <RangeParam>
+              <Param>bars number: {barsNumber}</Param>
+              <Slider
+                value={barsNumber}
+                min={0}
+                max={300}
+                step={1}
+                onChange={(_, barsNumber) => this.setState({ barsNumber })}
+              />
+            </RangeParam>
+          </PanelRow>
+        </Panel>
+      </Page>
+    )
+  }
+}

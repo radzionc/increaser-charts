@@ -5,11 +5,13 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.7.1",
+    "@material-ui/lab": "^3.0.0-alpha.26",
+    "increaser-charts": "file:..",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "react-scripts": "^1.1.4",
-    "increaser-charts": "file:.."
+    "react-scripts": "^1.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
