@@ -5,6 +5,7 @@ import { DEFAULT_THEME } from '../../constants';
 import DataContainer from './data-container'
 import Scroller from './scroller'
 import Bar from './bar'
+import Label from './label'
 import { sum } from '../../utils'
 
 const RootContainer = styled.div`
@@ -27,6 +28,12 @@ const LabelsContainer = styled.div`
   align-items: center;
   display: flex;
   user-select: none;
+`
+
+const Line = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${props => props.theme.mainColor};
 `
 
 export default class BarChart extends React.Component {
@@ -60,9 +67,21 @@ export default class BarChart extends React.Component {
       const dataConainerProps = { barTotalWidth, width, offset, oldOffset, totalWidth, startIndex }
 
       const Labels = () => {
+        const labels = slicedBars.map(b => b.label)
+        if (labels.every(l => !l)) return null
+
         return (
           <LabelsContainer>
-
+            {labels.map((label, index) => (
+              <Label
+                width={barWidth}
+                space={barSpace}
+                selected={centerBarIndex === index + startIndex}
+                key={index + startIndex}
+              >
+                {label}
+              </Label>
+            ))}
           </LabelsContainer>
         )
       }
@@ -92,6 +111,7 @@ export default class BarChart extends React.Component {
             <BarsView ref={el => this.barsContainer = el}>
               <Bars/>
             </BarsView>
+            {bars.length > 0 && <Line/>}
             <Labels/>
           </DataContainer>
           {showScroller && <Scroller/>}
