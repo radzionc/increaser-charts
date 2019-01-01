@@ -4,6 +4,7 @@ import { Switch } from '@material-ui/core'
 import { Slider } from '@material-ui/lab'
 
 import { BarChart } from 'increaser-charts'
+import { getMockBars } from './mock';
 
 const Page = styled.div`
   min-height: 100vh;
@@ -81,7 +82,7 @@ export default class App extends React.Component {
       barSpace: 8,
       barsNumber,
       barsWithLabels,
-      bars: [],
+      bars: getMockBars(barsNumber, barsWithLabels),
       showScroll: true,
       selectCenterBarOnScroll: true
     }
@@ -98,6 +99,7 @@ export default class App extends React.Component {
       barsWithLabels,
       barsNumber
     } = this.state
+    console.log(bars)
     return (
       <Page>
         <Wrapper>
@@ -124,7 +126,7 @@ export default class App extends React.Component {
               <Param>bars with labels: </Param>
               <Switch
                 checked={barsWithLabels}
-                onChange={() => this.setState({ barsWithLabels: !barsWithLabels })}
+                onChange={() => this.toggleBarsWithLabels()}
               />
             </BoolParam>
             <BoolParam>
@@ -163,12 +165,27 @@ export default class App extends React.Component {
                 min={0}
                 max={300}
                 step={1}
-                onChange={(_, barsNumber) => this.setState({ barsNumber })}
+                onChange={(_, barsNumber) => this.changeBarNumber(barsNumber)}
               />
             </RangeParam>
           </PanelRow>
         </Panel>
       </Page>
     )
+  }
+
+  toggleBarsWithLabels = () => {
+    const { barsNumber, barsWithLabels } = this.state
+    const newBarsWithLabels = !barsWithLabels
+    this.setState({
+      barsWithLabels: newBarsWithLabels,
+      bars: getMockBars(barsNumber, newBarsWithLabels)
+    })
+  }
+
+  changeBarNumber = (barsNumber) => {
+    const { barsWithLabels } = this.state
+    const bars = getMockBars(barsNumber, barsWithLabels)
+    this.setState({ bars, barsNumber })
   }
 }
