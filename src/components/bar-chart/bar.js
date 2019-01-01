@@ -50,7 +50,7 @@ export default ({
   )
 
   return (
-    <g key={index}>
+    <g>
       {bar.map(({ value, color }, index) => {
         const valueBefore = sum(bar.slice(0, index))
         const props = { value, color, valueBefore, key: index }

@@ -75,7 +75,7 @@ export default class BarChart extends React.Component {
     const Content = () => {
       if (!width) return null
       const Bars = () => {
-        const barCommonProps = { startIndex, height, barWidth, barSpace, oldOffset, offset, centerBarIndex, onBarSelect, highest }
+        const barCommonProps = { startIndex, height, barWidth, barSpace, centerBarIndex, onBarSelect, highest }
         if (!height) return null
         return slicedBars.map(({ items }, index) => (
           <Bar
@@ -194,8 +194,7 @@ export default class BarChart extends React.Component {
     const totalWidth = bars.length * bar + barSpace
     const getNewOffsets = () => {
       if (centerBarIndex !== undefined && !scrolling) {
-        const barsWidth = bars.length * bar
-        if (barsWidth < width) {
+        if (totalWidth < width) {
           return {
             oldOffset: 0,
             offset: 0
