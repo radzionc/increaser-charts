@@ -4,6 +4,8 @@ import { DEFAULT_THEME } from '../../constants';
 
 import DataContainer from './data-container'
 import Scroller from './scroller'
+import Bar from './bar'
+import { sum } from '../../utils'
 
 const RootContainer = styled.div`
   height: 100%;
@@ -12,7 +14,7 @@ const RootContainer = styled.div`
   flex-direction: column;
 `
 
-const BarsView = styled.div`
+const BarsView = styled.svg`
   height: 100%;
   width: 100%;
 `
@@ -34,11 +36,12 @@ export default class BarChart extends React.Component {
       height: 0,
       width: 0,
       offset: 0,
-      oldOffset: 0
+      oldOffset: 0,
+      scrolling: false
     }
   }
   render() {
-    const { theme, showScroller, barWidth, barSpace, bars } = this.props
+    const { theme, showScroller, barWidth, barSpace, bars, centerBarIndex, onBarSelect } = this.props
     const { width, offset, oldOffset, height } = this.state
 
     const barTotalWidth = barWidth + barSpace
@@ -52,7 +55,6 @@ export default class BarChart extends React.Component {
     }
     
     const startIndex = getStartIndex()
-    console.log(width, height)
     const Content = () => {
       if (!width) return null
       const dataConainerProps = { barTotalWidth, width, offset, oldOffset, totalWidth, startIndex }
@@ -64,12 +66,31 @@ export default class BarChart extends React.Component {
           </LabelsContainer>
         )
       }
+      const lastIndex = Math.ceil((totalWidth + oldOffset + (offset < oldOffset ? oldOffset - offset : 0)) / barTotalWidth)
+      const slicedBars = bars.slice(startIndex, lastIndex)
+      const highest = bars.map(b => b.items).reduce((acc, bar) => {
+        const height = sum(bar)
+        return height > acc ? height : acc
+      }, 0)
+      
+      const Bars = () => {
+        if (!height) return null
+        const barCommonProps = { startIndex, height, barWidth, barSpace, centerBarIndex, onBarSelect, highest}
+        return slicedBars.map(({ items }, index) =>(
+          <Bar
+            {...barCommonProps}
+            bar={items}
+            index={index}
+            key={index}
+          />
+        ))
+      }
 
       return (
         <React.Fragment>
           <DataContainer {...dataConainerProps}>
             <BarsView ref={el => this.barsContainer = el}>
-              
+              <Bars/>
             </BarsView>
             <Labels/>
           </DataContainer>
@@ -108,5 +129,40 @@ export default class BarChart extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize)
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { width, offset, scrolling } = prevState
+    if (!width) return null
+
+    const { centerBarIndex, barWidth, barSpace, bars } = nextProps
+    const bar = barWidth + barSpace
+    const totalWidth = bars.length * bar + barSpace
+    const getNewOffsets = () => {
+      if (centerBarIndex !== undefined && !scrolling) {
+        if (totalWidth < width) {
+          return {
+            oldOffset: 0,
+            offset: 0
+          }
+        }
+        const offsetToCenter = totalWidth - bar * centerBarIndex - (width + bar) / 2
+        const getOffset = () => {
+          if (offsetToCenter < 0) return 0
+          if (offsetToCenter + width > totalWidth) return totalWidth - width
+          return offsetToCenter
+        }
+
+        return {
+          offset: getOffset(),
+          oldOffset: offset
+        }
+      }
+    }
+    return {
+      ...prevState,
+      ...getNewOffsets(),
+      totalWidth
+    }
   }
 }
