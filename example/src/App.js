@@ -83,7 +83,7 @@ export default class App extends React.Component {
       barsNumber,
       barsWithLabels,
       bars: getMockBars(barsNumber, barsWithLabels),
-      showScroll: true,
+      showScroller: true,
       selectCenterBarOnScroll: true
     }
   }
@@ -95,11 +95,10 @@ export default class App extends React.Component {
       barSpace,
       centerBarIndex,
       selectCenterBarOnScroll,
-      showScroll,
+      showScroller,
       barsWithLabels,
       barsNumber
     } = this.state
-    console.log(bars)
     return (
       <Page>
         <Wrapper>
@@ -110,7 +109,7 @@ export default class App extends React.Component {
             centerBarIndex={centerBarIndex}
             onBarSelect={(centerBarIndex) => this.setState({ centerBarIndex })}
             selectCenterBarOnScroll={selectCenterBarOnScroll}
-            showScroll={showScroll}
+            showScroller={showScroller}
           />
         </Wrapper>
         <Panel>
@@ -132,8 +131,8 @@ export default class App extends React.Component {
             <BoolParam>
               <Param>show scroll: </Param>
               <Switch
-                checked={showScroll}
-                onChange={() => this.setState({ showScroll: !showScroll })}
+                checked={showScroller}
+                onChange={() => this.setState({ showScroller: !showScroller })}
               />
             </BoolParam>
           </PanelRow>
