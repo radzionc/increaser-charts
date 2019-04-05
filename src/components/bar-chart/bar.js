@@ -24,7 +24,7 @@ export default ({
 
     return (
       <rect
-        opacity={realIndex === centerBarIndex ? 1 : 0.6}
+        opacity={(realIndex === centerBarIndex) || !onBarSelect ? 1 : 0.6}
         x={x}
         y={y}
         width={barWidth}
