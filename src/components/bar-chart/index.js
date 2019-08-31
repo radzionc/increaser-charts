@@ -68,24 +68,33 @@ export default class BarChart extends React.Component {
     const lastIndex = Math.ceil((totalWidth - oldOffset + (offset < oldOffset ? oldOffset - offset : 0)) / barTotalWidth)
     const slicedBars = bars.slice(startIndex, lastIndex)
     const highest = bars.map(b => b.items).reduce((acc, bar) => {
-      const height = sum(bar)
+      const height = sum(bar.map(b => b.value))
       return height > acc ? height : acc
     }, 0)
-    
+    const completeTheme = { ...DEFAULT_THEME, ...theme }
     const Content = () => {
       if (!width) return null
       const Bars = () => {
-        const barCommonProps = { startIndex, height, barWidth, barSpace, centerBarIndex, onBarSelect, highest }
+        const barCommonProps = {
+          labelFontSize: completeTheme.labelFontSize,
+          startIndex,
+          height,
+          barWidth,
+          barSpace,
+          centerBarIndex,
+          onBarSelect,
+          highest
+        }
         if (!height) return null
-        return slicedBars.map(({ items }, index) => (
+        return slicedBars.map(({ items, text }, index) => (
           <Bar
             {...barCommonProps}
+            text={text}
             bar={items}
             index={index}
             key={index}
-            />
-          )
-        )
+          />
+        ))
       }
       const Labels = () => {
         const labels = slicedBars.map(b => b.label)
@@ -132,7 +141,7 @@ export default class BarChart extends React.Component {
     }
 
     return (
-      <ThemeProvider theme={{ ...DEFAULT_THEME, ...theme}}>
+      <ThemeProvider theme={completeTheme}>
         <RootContainer ref={el => this.rootContainer = el}>
           <Content/>
         </RootContainer>

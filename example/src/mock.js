@@ -59,7 +59,7 @@ const getMockBarItems = () => {
 }
 
 
-export const getMockBars = (number, withLabels = true) => {
+export const getMockBars = (number, withLabels = true, withTexts = true) => {
   const bars = new Array(number)
     .fill(0)
     .map((_, index) => {
@@ -73,9 +73,16 @@ export const getMockBars = (number, withLabels = true) => {
         return `${today.getMonth() + 1}/${today.getDate()}`
       }
 
-      return { 
+      const bar = { 
         items,
         label: getLabel()
+      }
+
+      if (!withTexts) return bar
+
+      return {
+        ...bar,
+        text: bar.label
       }
     })
 

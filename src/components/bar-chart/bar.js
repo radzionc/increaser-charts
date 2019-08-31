@@ -1,5 +1,12 @@
 import React from 'react'
-import { sum } from '../../utils';
+import styled from 'styled-components'
+import { sum } from '../../utils'
+
+const Text = styled.text`
+  fill: ${props => props.theme.mainColor};
+  font-size: ${props => props.theme.labelFontSize}px;
+  pointer-events: none;
+`
 
 export default ({
   bar,
@@ -10,12 +17,13 @@ export default ({
   centerBarIndex,
   onBarSelect,
   highest,
-  startIndex
+  text,
+  startIndex,
+  labelFontSize
 }) => {
   const barTotalWidth = barWidth + barSpace
   const realIndex = index + startIndex
   const x = barTotalWidth * index + barSpace
-
   const valueToHeight = value => (value * height) / highest
       
   const Subbar = ({ valueBefore, value, color }) => {
@@ -31,6 +39,20 @@ export default ({
         height={rectHeight}
         fill={color}
       />
+    )
+  }
+  const BarText = () => {
+    if (!text) return null
+    const barHeight = sum(bar.map(b => valueToHeight(b.value)))
+    const y = labelFontSize * 2 > barHeight ? height - labelFontSize : height - barHeight + labelFontSize
+    return (
+      <Text
+        width={barWidth}
+        x={x + barWidth / 2}
+        y={y}
+        dominantBaseline="middle"
+        textAnchor="middle"
+      >{text}</Text>
     )
   }
   const Selectable = () => (
@@ -52,11 +74,12 @@ export default ({
   return (
     <g>
       {bar.map(({ value, color }, index) => {
-        const valueBefore = sum(bar.slice(0, index))
+        const valueBefore = sum(bar.slice(0, index).map(b => b.value))
         const props = { value, color, valueBefore, key: index }
         
         return <Subbar {...props} />
       })}
+      <BarText/>
       {onBarSelect && <Selectable/>}
     </g>
   )

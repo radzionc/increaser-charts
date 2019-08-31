@@ -17,8 +17,8 @@ const Page = styled.div`
 `
 
 const Wrapper = styled.div`
-  height: 60vh;
-  width: 80%;
+  height: 50vh;
+  width: 90%;
   padding: 20px;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
   border-radius: 5px;
@@ -32,7 +32,7 @@ const Wrapper = styled.div`
 `
 
 const Panel = styled.div`
-  width: 80%;
+  width: 90%;
   padding: 20px;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
   border-radius: 5px;
@@ -87,13 +87,15 @@ class App extends React.Component {
     super(props)
     const barsNumber = 60
     const barsWithLabels = true
+    const barsWithTexts = true
     this.state = {
       centerBarIndex: undefined,
       barWidth: 35,
       barSpace: 8,
       barsNumber,
       barsWithLabels,
-      bars: getMockBars(60, barsWithLabels),
+      barsWithTexts,
+      bars: getMockBars(60, barsWithLabels, barsWithTexts),
       showScroll: true,
       selectCenterBarOnScroll: true
     }
@@ -107,6 +109,7 @@ class App extends React.Component {
       bars,
       selectCenterBarOnScroll,
       barsWithLabels,
+      barsWithTexts,
       showScroll
     } = this.state
     return (
@@ -142,6 +145,13 @@ class App extends React.Component {
               <Switch
                 checked={barsWithLabels}
                 onChange={this.toggleBarsWithLabels}
+              />
+            </BoolParam>
+            <BoolParam>
+              <Param>bars with text: </Param>
+              <Switch
+                checked={barsWithTexts}
+                onChange={this.toggleBarsWithTexts}
               />
             </BoolParam>
             <BoolParam>
@@ -190,17 +200,26 @@ class App extends React.Component {
   }
 
   toggleBarsWithLabels = () => {
-    const { barsNumber, barsWithLabels } = this.state
+    const { barsNumber, barsWithLabels, barsWithTexts } = this.state
     const newBarsWithLabels = !barsWithLabels
     this.setState({
       barsWithLabels: newBarsWithLabels,
-      bars: getMockBars(barsNumber, newBarsWithLabels)
+      bars: getMockBars(barsNumber, newBarsWithLabels, barsWithTexts)
+    })
+  }
+
+  toggleBarsWithTexts = () => {
+    const { barsNumber, barsWithLabels, barsWithTexts } = this.state
+    const newBarsWithTexts = !barsWithTexts
+    this.setState({
+      barsWithTexts: newBarsWithTexts,
+      bars: getMockBars(barsNumber, barsWithLabels, newBarsWithTexts)
     })
   }
 
   changeBarsNumber = (barsNumber) => {
-    const { barsWithLabels } = this.state
-    const bars = getMockBars(barsNumber, barsWithLabels)
+    const { barsWithLabels, barsWithTexts } = this.state
+    const bars = getMockBars(barsNumber, barsWithLabels, barsWithTexts)
     this.setState({ bars })
   }
 }

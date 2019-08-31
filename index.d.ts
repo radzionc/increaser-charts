@@ -13,6 +13,7 @@ export interface Item {
 
 export interface Bar {
   label?: string;
+  text?: string;
   items: Item[]
 }
 

@@ -25,6 +25,7 @@ import { BarChart } from 'increaser-charts'
 const bars = [
   {
     label: 'first'
+    text: '15
     items: [{
       value: 10,
       color: 'gold'
@@ -35,6 +36,7 @@ const bars = [
   },
   {
     label: 'second',
+    text: 8
     items: [{
       value: 8,
       color: 'black'
@@ -73,6 +75,7 @@ class Example extends Component {
       bars,
       selectCenterBarOnScroll,
       barsWithLabels,
+      barsWithTexts,
       showScroll
     } = this.state
     return (
@@ -82,6 +85,8 @@ class Example extends Component {
           bars={bars}
           barWidth={barWidth}
           barSpace={barSpace}
+          barsWithLabels={barsWithLabels}
+          barsWithTexts={barsWithTexts}
           centerBarIndex={centerBarIndex}
           onBarSelect={(centerBarIndex) => this.setState({ centerBarIndex })}
           selectCenterBarOnScroll={selectCenterBarOnScroll}
