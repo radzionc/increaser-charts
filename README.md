@@ -98,7 +98,7 @@ class Example extends Component {
 }
 ```
 
-## [Story on Medium](https://medium.com/p/3b20b7907633)
+## [Blog Post](https://geekrodion.com/blog/barchart-react)
 
 ## License
 
