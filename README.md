@@ -24,8 +24,8 @@ import { BarChart } from 'increaser-charts'
 
 const bars = [
   {
-    label: 'first'
-    text: '15'
+    label: 'first',
+    text: '15',
     items: [{
       value: 10,
       color: 'gold'
@@ -36,7 +36,7 @@ const bars = [
   },
   {
     label: 'second',
-    text: 8
+    text: 8,
     items: [{
       value: 8,
       color: 'black'
